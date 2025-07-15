@@ -82,3 +82,54 @@ nav a {
 .android {
   background: #4F46E5;
 }
+
+/* Privacy Policy Styling */
+.privacy {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  text-align: left;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #64748B;
+}
+
+.privacy h1, .privacy h2, .privacy h3 {
+  color: #4F46E5;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.privacy h1 {
+  font-size: 2rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+}
+
+.privacy h2 {
+  font-size: 1.5rem;
+}
+
+.privacy h3 {
+  font-size: 1.2rem;
+}
+
+.privacy p {
+  margin-bottom: 1rem;
+}
+
+.privacy ul {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+  list-style-type: disc;
+}
+
+.privacy a {
+  color: #4F46E5;
+  text-decoration: underline;
+}
+
+.privacy strong {
+  color: #334155;
+}
