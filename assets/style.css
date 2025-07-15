@@ -1,38 +1,84 @@
-
 body {
+  margin: 0;
+  padding: 0;
   font-family: 'Segoe UI', sans-serif;
-  max-width: 700px;
-  margin: 0 auto;
-  padding: 2rem;
-  background: #fdf6ec;
-  color: #333;
+  background: #ffffff;
+  color: #64748B;
+  text-align: center;
 }
 
-header h1 {
-  font-size: 2.5rem;
-  color: #A3B18A;
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  background-color: #fff;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-.button {
-  display: inline-block;
-  margin: 0.5rem 1rem 1rem 0;
-  padding: 0.75rem 1.5rem;
-  background: #DDBEA9;
-  color: #000;
-  border-radius: 5px;
+nav a {
   text-decoration: none;
+  color: #4F46E5;
+  font-weight: 600;
 }
 
-h2 {
-  margin-top: 2rem;
-  color: #E9C46A;
+.logo {
+  max-width: 200px;
+  margin: 2rem auto 1rem;
+  display: block;
 }
 
-ul {
-  list-style: disc;
-  padding-left: 1.5rem;
+.hero {
+  padding: 1rem 2rem;
 }
 
-footer {
-  margin-top: 2rem;
+.hero h1 {
+  font-size: 2.5rem;
+  color: #4F46E5;
+}
+
+.hero p {
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 1rem auto;
+}
+
+.screenshots {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 2rem 1rem;
+}
+
+.screenshots img {
+  width: 200px;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.downloads {
+  margin: 2rem 0;
+}
+
+.download-button {
+  display: inline-block;
+  margin: 1rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: bold;
+  text-decoration: none;
+  color: white;
+}
+
+.ios {
+  background: #4F46E5;
+}
+
+.android {
+  background: #4F46E5;
 }
