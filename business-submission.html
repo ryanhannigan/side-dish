@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Your Business | Side Dishcounts</title>
+  <style>
+    :root {
+      --brand: #0c7bdc;
+      --brand-dark: #0660b3;
+      --text: #1a1a1a;
+      --text-muted: #666;
+      --border: #e0e0e6;
+      --bg: #f8f9fc;
+      --success: #0f7a3e;
+      --error: #c41e3a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 24px 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0 0 8px;
+      color: var(--text);
+    }
+    header p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+    .card h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0 0 16px;
+      color: var(--text);
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group:last-child { margin-bottom: 0; }
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    label .optional { font-weight: 400; color: var(--text-muted); }
+    input[type="text"],
+    input[type="email"],
+    input[type="url"],
+    input[type="tel"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      background: #fff;
+      transition: border-color 0.15s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(12, 123, 220, 0.15);
+    }
+    textarea {
+      min-height: 88px;
+      resize: vertical;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .row-3 {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 520px) {
+      .row, .row-3 { grid-template-columns: 1fr; }
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chip {
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #f5f6fa;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.15s;
+    }
+    .chip:hover { border-color: var(--brand); }
+    .chip.active {
+      background: var(--brand);
+      color: #fff;
+      border-color: var(--brand);
+    }
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .btn-primary {
+      background: var(--brand);
+      color: #fff;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: var(--brand-dark);
+    }
+    .btn-secondary {
+      background: #e8e9ef;
+      color: var(--text);
+    }
+    .btn-secondary:hover:not(:disabled) {
+      background: #dcdde6;
+    }
+    .alert {
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .alert.show { display: block; }
+    .alert-success {
+      background: #e7f7ed;
+      color: var(--success);
+      border: 1px solid #cbead7;
+    }
+    .alert-error {
+      background: #fdecec;
+      color: var(--error);
+      border: 1px solid #f5c2c0;
+    }
+    .note {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+    .required::after {
+      content: " *";
+      color: var(--error);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Add Your Business to Side Dishcounts</h1>
+      <p>Submit your business for review. We'll get back to you once it's been processed.</p>
+    </header>
+
+    <div class="alert alert-success" id="successBox">
+      <strong>Thank you!</strong> Your business has been submitted successfully. We'll review it and reach out to you at the email you provided.
+    </div>
+    <div class="alert alert-error" id="errorBox"></div>
+
+    <form id="submitForm">
+      <div class="card">
+        <h2>Business Information</h2>
+        <div class="form-group">
+          <label for="name" class="required">Business Name</label>
+          <input type="text" id="name" required placeholder="e.g. The Blue Star" />
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" placeholder="Tell us about your business..."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="category" class="required">Primary Category</label>
+          <select id="category" required>
+            <option value="">Select a category</option>
+            <option value="Restaurant">Restaurant</option>
+            <option value="Cafe">Cafe</option>
+            <option value="Bar">Bar</option>
+            <option value="Brewery">Brewery</option>
+            <option value="Brewpub">Brewpub</option>
+            <option value="Coffee">Coffee</option>
+            <option value="Coffee shop">Coffee shop</option>
+            <option value="Pizza">Pizza</option>
+            <option value="Mexican">Mexican</option>
+            <option value="Italian">Italian</option>
+            <option value="Japanese">Japanese</option>
+            <option value="Sushi">Sushi</option>
+            <option value="Thai">Thai</option>
+            <option value="Vietnamese">Vietnamese</option>
+            <option value="Chinese">Chinese</option>
+            <option value="Korean">Korean</option>
+            <option value="Indian">Indian</option>
+            <option value="Mediterranean">Mediterranean</option>
+            <option value="New American">New American</option>
+            <option value="Seafood">Seafood</option>
+            <option value="Steakhouse">Steakhouse</option>
+            <option value="Barbecue">Barbecue</option>
+            <option value="Dessert">Dessert</option>
+            <option value="Gastropub">Gastropub</option>
+            <option value="Cocktail">Cocktail</option>
+            <option value="Winery">Winery</option>
+            <option value="Fast Casual">Fast Casual</option>
+            <option value="Vegan">Vegan</option>
+            <option value="Vegetarian">Vegetarian</option>
+            <option value="Retail">Retail</option>
+            <option value="Grocery Store">Grocery Store</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="Event Venue">Event Venue</option>
+            <option value="Pie">Pie</option>
+            <option value="African">African</option>
+            <option value="German">German</option>
+            <option value="Greek">Greek</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Location</h2>
+        <div class="form-group">
+          <label for="streetAddress" class="required">Street Address</label>
+          <input type="text" id="streetAddress" required placeholder="123 Main St" />
+        </div>
+        <div class="row-3">
+          <div class="form-group">
+            <label for="city" class="required">City</label>
+            <input type="text" id="city" required placeholder="Colorado Springs" />
+          </div>
+          <div class="form-group">
+            <label for="state" class="required">State</label>
+            <input type="text" id="state" required placeholder="CO" maxlength="2" />
+          </div>
+          <div class="form-group">
+            <label for="zipCode" class="required">ZIP Code</label>
+            <input type="text" id="zipCode" required placeholder="80903" />
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Contact Information</h2>
+        <div class="form-group">
+          <label for="contactEmail" class="required">Contact Email</label>
+          <input type="email" id="contactEmail" required placeholder="owner@business.com" />
+          <p class="note">We'll use this to reach you about your submission.</p>
+        </div>
+        <div class="row">
+          <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" placeholder="(719) 555-1234" />
+          </div>
+          <div class="form-group">
+            <label for="website">Website</label>
+            <input type="url" id="website" placeholder="https://yourbusiness.com" />
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="submit" class="btn-primary" id="submitBtn">Submit for Review</button>
+        <button type="button" class="btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </form>
+  </div>
+
+  <script type="module">
+    // ========== FIREBASE CONFIG ==========
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBUF72oCa8P31wcsdZDgp06bfFTTtkDCmo",
+  authDomain: "dishcounts-v1.firebaseapp.com",
+  projectId: "dishcounts-v1",
+  storageBucket: "dishcounts-v1.firebasestorage.app",
+  messagingSenderId: "308275594809",
+  appId: "1:308275594809:web:4f14832819dc150a2defe8",
+  measurementId: "G-4R4X5ZZVJN"
+};
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const successBox = document.getElementById('successBox');
+    const errorBox = document.getElementById('errorBox');
+    const submitBtn = document.getElementById('submitBtn');
+    const form = document.getElementById('submitForm');
+
+    function showError(msg) {
+      errorBox.textContent = msg;
+      errorBox.classList.add('show');
+      successBox.classList.remove('show');
+    }
+
+    function showSuccess() {
+      successBox.classList.add('show');
+      errorBox.classList.remove('show');
+    }
+
+    function hideAlerts() {
+      successBox.classList.remove('show');
+      errorBox.classList.remove('show');
+    }
+
+    function getVal(id) {
+      return (document.getElementById(id).value || '').trim();
+    }
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      form.reset();
+      hideAlerts();
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideAlerts();
+
+      const name = getVal('name');
+      const contactEmail = getVal('contactEmail');
+      if (!name) {
+        showError('Business name is required.');
+        return;
+      }
+      if (!contactEmail) {
+        showError('Contact email is required so we can reach you.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+
+      try {
+        // Sign in anonymously (required by Firestore rules for business_submissions create)
+        let user = auth.currentUser;
+        if (!user) {
+          const cred = await signInAnonymously(auth);
+          user = cred.user;
+        }
+
+        const businessData = {
+          name,
+          description: getVal('description'),
+          contactEmail,
+          streetAddress: getVal('streetAddress'),
+          city: getVal('city'),
+          state: getVal('state'),
+          zipCode: getVal('zipCode'),
+          phone: getVal('phone'),
+          website: getVal('website'),
+          categories: [document.getElementById('category').value || 'Restaurant'],
+          imageURL: null,
+          logoURL: null,
+          latitude: null,
+          longitude: null,
+          isDozen: false,
+          isFeatured: false,
+          businessHours: null,
+          socialMedia: null
+        };
+
+        const submission = {
+          submittedByUserId: user.uid,
+          submittedVia: 'web',
+          businessData,
+          status: 'pending',
+          reviewerId: null,
+          reviewedAt: null,
+          notes: null,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        };
+
+        await addDoc(collection(db, 'business_submissions'), submission);
+
+        showSuccess();
+        form.reset();
+      } catch (err) {
+        console.error('Submission error:', err);
+        let msg = err?.message || String(err);
+        if (msg.includes('permission-denied') || msg.includes('PERMISSION_DENIED')) {
+          msg = 'Permission denied. Please ensure Firebase Anonymous Auth is enabled and Firestore rules allow creates.';
+        } else if (msg.includes('auth/operation-not-allowed')) {
+          msg = 'Anonymous sign-in is not enabled. Please enable it in Firebase Console → Authentication → Sign-in method.';
+        }
+        showError('Failed to submit: ' + msg);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit for Review';
+      }
+    });
+  </script>
+</body>
+</html>
