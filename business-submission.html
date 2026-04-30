@@ -106,26 +106,6 @@
     @media (max-width: 520px) {
       .row, .row-3 { grid-template-columns: 1fr; }
     }
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .chip {
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: #f5f6fa;
-      cursor: pointer;
-      font-size: 0.875rem;
-      transition: all 0.15s;
-    }
-    .chip:hover { border-color: var(--brand); }
-    .chip.active {
-      background: var(--brand);
-      color: #fff;
-      border-color: var(--brand);
-    }
     .actions {
       display: flex;
       gap: 12px;
@@ -185,21 +165,185 @@
       content: " *";
       color: var(--error);
     }
+
+    /* ===== HOURS SECTION ===== */
+    .hours-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .hours-row {
+      display: grid;
+      grid-template-columns: 90px 1fr 16px 1fr 36px;
+      align-items: center;
+      gap: 8px;
+    }
+    @media (max-width: 520px) {
+      .hours-row {
+        grid-template-columns: 80px 1fr 12px 1fr 32px;
+        gap: 6px;
+      }
+    }
+    .hours-row .day-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .hours-row .separator {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+    .hours-row select {
+      padding: 8px 10px;
+      font-size: 0.875rem;
+    }
+    .hours-row select:disabled {
+      background: #f5f6fa;
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+    .closed-toggle {
+      appearance: none;
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #f5f6fa;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: all 0.15s;
+      flex-shrink: 0;
+      padding: 0;
+      line-height: 1;
+    }
+    .closed-toggle.is-closed {
+      background: #fdecec;
+      border-color: #f5c2c0;
+      color: var(--error);
+    }
+    .closed-toggle:not(.is-closed) {
+      color: #888;
+    }
+    .hours-note {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+    }
+
+    /* ===== LOGO UPLOAD ===== */
+    .logo-upload-area {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #fafbfd;
+      position: relative;
+    }
+    .logo-upload-area:hover,
+    .logo-upload-area.drag-over {
+      border-color: var(--brand);
+      background: rgba(12,123,220,0.04);
+    }
+    .logo-upload-area input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      border: none;
+      padding: 0;
+    }
+    .logo-upload-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+    .logo-upload-label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .logo-upload-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .logo-preview-wrap {
+      display: none;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 14px;
+      background: #f5f6fa;
+      border-radius: 8px;
+      margin-top: 12px;
+    }
+    .logo-preview-wrap.show { display: flex; }
+    .logo-preview-img {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+    .logo-preview-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .logo-preview-name {
+      font-size: 0.875rem;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .logo-preview-size {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+    .logo-remove {
+      background: none;
+      border: none;
+      padding: 4px 8px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      border-radius: 4px;
+      transition: color 0.15s;
+      flex-shrink: 0;
+    }
+    .logo-remove:hover { color: var(--error); }
+    .upload-progress {
+      display: none;
+      margin-top: 10px;
+      font-size: 0.82rem;
+      color: var(--brand);
+    }
+    .upload-progress.show { display: block; }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
+      <img src="assets/dishcountsLogo.png" alt="Side Dishcounts" style="height:60px;width:auto;margin-bottom:16px;" />
       <h1>Add Your Business to Side Dishcounts</h1>
       <p>Submit your business for review. We'll get back to you once it's been processed.</p>
     </header>
 
     <div class="alert alert-success" id="successBox">
-      <strong>Thank you!</strong> Your business has been submitted successfully. We'll review it and reach out to you at the email you provided.
+      <strong>Thank you!</strong> Your business has been submitted successfully. We'll review it and reach out to you at the email you provided if we need any additional information.
     </div>
     <div class="alert alert-error" id="errorBox"></div>
 
     <form id="submitForm">
+      <!-- Business Info -->
       <div class="card">
         <h2>Business Information</h2>
         <div class="form-group">
@@ -207,7 +351,7 @@
           <input type="text" id="name" required placeholder="e.g. The Blue Star" />
         </div>
         <div class="form-group">
-          <label for="description">Description</label>
+          <label for="description">Description <span class="optional">(optional)</span></label>
           <textarea id="description" placeholder="Tell us about your business..."></textarea>
         </div>
         <div class="form-group">
@@ -251,10 +395,36 @@
             <option value="African">African</option>
             <option value="German">German</option>
             <option value="Greek">Greek</option>
+            <option value="__other__">Other…</option>
           </select>
+        </div>
+        <div class="form-group" id="categoryOtherGroup" style="display:none;">
+          <label for="categoryOther">Custom Category</label>
+          <input type="text" id="categoryOther" placeholder="e.g. Food Truck, Cidery…" maxlength="60" />
         </div>
       </div>
 
+      <!-- Logo Upload -->
+      <div class="card">
+        <h2>Logo <span style="font-weight:400;color:var(--text-muted);font-size:0.9rem;">(optional)</span></h2>
+        <div class="logo-upload-area" id="logoDropZone">
+          <input type="file" id="logoFile" accept="image/png,image/jpeg,image/jpg,image/webp,image/svg+xml" />
+          <div class="logo-upload-icon">🖼️</div>
+          <span class="logo-upload-label">Click or drag to upload your logo</span>
+          <span class="logo-upload-sub">PNG, JPG, WebP, or SVG · Max 5 MB</span>
+        </div>
+        <div class="logo-preview-wrap" id="logoPreviewWrap">
+          <img class="logo-preview-img" id="logoPreviewImg" src="" alt="Logo preview" />
+          <div class="logo-preview-info">
+            <div class="logo-preview-name" id="logoPreviewName"></div>
+            <div class="logo-preview-size" id="logoPreviewSize"></div>
+          </div>
+          <button type="button" class="logo-remove" id="logoRemoveBtn" title="Remove logo">✕</button>
+        </div>
+        <div class="upload-progress" id="uploadProgress">⬆️ Uploading logo…</div>
+      </div>
+
+      <!-- Location -->
       <div class="card">
         <h2>Location</h2>
         <div class="form-group">
@@ -277,6 +447,7 @@
         </div>
       </div>
 
+      <!-- Contact -->
       <div class="card">
         <h2>Contact Information</h2>
         <div class="form-group">
@@ -286,14 +457,23 @@
         </div>
         <div class="row">
           <div class="form-group">
-            <label for="phone">Phone</label>
+            <label for="phone">Phone <span class="optional">(optional)</span></label>
             <input type="tel" id="phone" placeholder="(719) 555-1234" />
           </div>
           <div class="form-group">
-            <label for="website">Website</label>
+            <label for="website">Website <span class="optional">(optional)</span></label>
             <input type="url" id="website" placeholder="https://yourbusiness.com" />
           </div>
         </div>
+      </div>
+
+      <!-- Hours -->
+      <div class="card">
+        <h2>Business Hours <span style="font-weight:400;color:var(--text-muted);font-size:0.9rem;">(optional)</span></h2>
+        <div class="hours-grid" id="hoursGrid">
+          <!-- Rows injected by JS -->
+        </div>
+        <p class="hours-note">Click the ✕ button on any day to mark it as closed. Leave all days empty to skip hours for now.</p>
       </div>
 
       <div class="actions">
@@ -305,99 +485,291 @@
 
   <script type="module">
     // ========== FIREBASE CONFIG ==========
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyBUF72oCa8P31wcsdZDgp06bfFTTtkDCmo",
-  authDomain: "dishcounts-v1.firebaseapp.com",
-  projectId: "dishcounts-v1",
-  storageBucket: "dishcounts-v1.firebasestorage.app",
-  messagingSenderId: "308275594809",
-  appId: "1:308275594809:web:4f14832819dc150a2defe8",
-  measurementId: "G-4R4X5ZZVJN"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyBUF72oCa8P31wcsdZDgp06bfFTTtkDCmo",
+      authDomain: "dishcounts-v1.firebaseapp.com",
+      projectId: "dishcounts-v1",
+      storageBucket: "dishcounts-v1.firebasestorage.app",
+      messagingSenderId: "308275594809",
+      appId: "1:308275594809:web:4f14832819dc150a2defe8",
+      measurementId: "G-4R4X5ZZVJN"
+    };
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
     import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
     import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-storage.js";
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const storage = getStorage(app);
 
+    // ========== UI REFS ==========
     const successBox = document.getElementById('successBox');
     const errorBox = document.getElementById('errorBox');
     const submitBtn = document.getElementById('submitBtn');
     const form = document.getElementById('submitForm');
+    const uploadProgress = document.getElementById('uploadProgress');
 
+    // ========== ALERT HELPERS ==========
     function showError(msg) {
       errorBox.textContent = msg;
       errorBox.classList.add('show');
       successBox.classList.remove('show');
+      errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-
     function showSuccess() {
       successBox.classList.add('show');
       errorBox.classList.remove('show');
+      successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
-
     function hideAlerts() {
       successBox.classList.remove('show');
       errorBox.classList.remove('show');
     }
-
     function getVal(id) {
       return (document.getElementById(id).value || '').trim();
     }
 
+    // ========== LOGO UPLOAD UI ==========
+    let selectedLogoFile = null;
+
+    const logoFile = document.getElementById('logoFile');
+    const logoDropZone = document.getElementById('logoDropZone');
+    const logoPreviewWrap = document.getElementById('logoPreviewWrap');
+    const logoPreviewImg = document.getElementById('logoPreviewImg');
+    const logoPreviewName = document.getElementById('logoPreviewName');
+    const logoPreviewSize = document.getElementById('logoPreviewSize');
+    const logoRemoveBtn = document.getElementById('logoRemoveBtn');
+
+    function formatBytes(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+
+    function setLogoFile(file) {
+      if (!file) return;
+      const maxSize = 5 * 1024 * 1024;
+      if (file.size > maxSize) {
+        showError('Logo file is too large. Please upload an image under 5 MB.');
+        return;
+      }
+      const allowed = ['image/png','image/jpeg','image/jpg','image/webp','image/svg+xml'];
+      if (!allowed.includes(file.type)) {
+        showError('Unsupported file type. Please upload a PNG, JPG, WebP, or SVG.');
+        return;
+      }
+      selectedLogoFile = file;
+      logoPreviewName.textContent = file.name;
+      logoPreviewSize.textContent = formatBytes(file.size);
+      const reader = new FileReader();
+      reader.onload = e => { logoPreviewImg.src = e.target.result; };
+      reader.readAsDataURL(file);
+      logoPreviewWrap.classList.add('show');
+    }
+
+    function clearLogo() {
+      selectedLogoFile = null;
+      logoFile.value = '';
+      logoPreviewImg.src = '';
+      logoPreviewName.textContent = '';
+      logoPreviewSize.textContent = '';
+      logoPreviewWrap.classList.remove('show');
+    }
+
+    logoFile.addEventListener('change', () => {
+      if (logoFile.files[0]) setLogoFile(logoFile.files[0]);
+    });
+    logoRemoveBtn.addEventListener('click', clearLogo);
+    logoDropZone.addEventListener('dragover', e => { e.preventDefault(); logoDropZone.classList.add('drag-over'); });
+    logoDropZone.addEventListener('dragleave', () => logoDropZone.classList.remove('drag-over'));
+    logoDropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      logoDropZone.classList.remove('drag-over');
+      const file = e.dataTransfer.files[0];
+      if (file) setLogoFile(file);
+    });
+
+    // ========== HOURS UI ==========
+    // hours model: { [String: [String]] }
+    // Key = day name, value = [openTime, closeTime]
+    // We'll use the same day names that appear in typical iOS Calendar apps to match the app.
+
+    const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+
+    // Generate time options in 30-min increments, 12-hr format
+    function buildTimeOptions() {
+      const opts = ['<option value="">-- Select --</option>'];
+      for (let h = 0; h < 24; h++) {
+        for (let m = 0; m < 60; m += 30) {
+          const ampm = h < 12 ? 'AM' : 'PM';
+          const h12 = h % 12 === 0 ? 12 : h % 12;
+          const mm = m === 0 ? '00' : '30';
+          const label = `${h12}:${mm} ${ampm}`;
+          opts.push(`<option value="${label}">${label}</option>`);
+        }
+      }
+      return opts.join('');
+    }
+
+    const timeOptionsHTML = buildTimeOptions();
+
+    function buildHoursRow(day) {
+      const row = document.createElement('div');
+      row.className = 'hours-row';
+      row.dataset.day = day;
+      row.innerHTML = `
+        <span class="day-label">${day}</span>
+        <select class="hours-open" aria-label="${day} opening time">${timeOptionsHTML}</select>
+        <span class="separator">–</span>
+        <select class="hours-close" aria-label="${day} closing time">${timeOptionsHTML}</select>
+        <button type="button" class="closed-toggle" title="Mark as closed">✕</button>
+      `;
+
+      const openSel = row.querySelector('.hours-open');
+      const closeSel = row.querySelector('.hours-close');
+      const toggleBtn = row.querySelector('.closed-toggle');
+
+      toggleBtn.addEventListener('click', () => {
+        const isClosed = toggleBtn.classList.toggle('is-closed');
+        openSel.disabled = isClosed;
+        closeSel.disabled = isClosed;
+        if (isClosed) {
+          openSel.value = '';
+          closeSel.value = '';
+        }
+        toggleBtn.title = isClosed ? 'Mark as open' : 'Mark as closed';
+        toggleBtn.textContent = isClosed ? '✓' : '✕';
+      });
+
+      return row;
+    }
+
+    const hoursGrid = document.getElementById('hoursGrid');
+    DAYS.forEach(day => hoursGrid.appendChild(buildHoursRow(day)));
+
+    // Collect hours into { [String: [String]] } — matches Business.swift `hours` type
+    // Only include days where both open and close are set, OR the day is marked closed (stored as ["Closed","Closed"])
+    function collectHours() {
+      const result = {};
+      let hasAny = false;
+
+      hoursGrid.querySelectorAll('.hours-row').forEach(row => {
+        const day = row.dataset.day;
+        const toggleBtn = row.querySelector('.closed-toggle');
+        const openSel = row.querySelector('.hours-open');
+        const closeSel = row.querySelector('.hours-close');
+
+        if (toggleBtn.classList.contains('is-closed')) {
+          result[day] = ['Closed', 'Closed'];
+          hasAny = true;
+        } else if (openSel.value && closeSel.value) {
+          result[day] = [openSel.value, closeSel.value];
+          hasAny = true;
+        }
+        // Partially filled or empty days are skipped
+      });
+
+      return hasAny ? result : null;
+    }
+
+    function resetHours() {
+      hoursGrid.querySelectorAll('.hours-row').forEach(row => {
+        row.querySelector('.hours-open').value = '';
+        row.querySelector('.hours-open').disabled = false;
+        row.querySelector('.hours-close').value = '';
+        row.querySelector('.hours-close').disabled = false;
+        const btn = row.querySelector('.closed-toggle');
+        btn.classList.remove('is-closed');
+        btn.textContent = '✕';
+        btn.title = 'Mark as closed';
+      });
+    }
+
+    // ========== CATEGORY OTHER TOGGLE ==========
+    const categorySelect = document.getElementById('category');
+    const categoryOtherGroup = document.getElementById('categoryOtherGroup');
+    const categoryOtherInput = document.getElementById('categoryOther');
+
+    categorySelect.addEventListener('change', () => {
+      const isOther = categorySelect.value === '__other__';
+      categoryOtherGroup.style.display = isOther ? 'block' : 'none';
+      categoryOtherInput.required = isOther;
+      if (!isOther) categoryOtherInput.value = '';
+    });
+
+    function resolvedCategory() {
+      if (categorySelect.value === '__other__') {
+        return categoryOtherInput.value.trim() || 'Other';
+      }
+      return categorySelect.value || 'Restaurant';
+    }
+
+    // ========== RESET ==========
     document.getElementById('resetBtn').addEventListener('click', () => {
       form.reset();
+      clearLogo();
+      resetHours();
+      categoryOtherGroup.style.display = 'none';
+      categoryOtherInput.required = false;
       hideAlerts();
     });
 
+    // ========== SUBMIT ==========
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       hideAlerts();
 
       const name = getVal('name');
       const contactEmail = getVal('contactEmail');
-      if (!name) {
-        showError('Business name is required.');
-        return;
-      }
-      if (!contactEmail) {
-        showError('Contact email is required so we can reach you.');
-        return;
-      }
+      if (!name) { showError('Business name is required.'); return; }
+      if (!contactEmail) { showError('Contact email is required so we can reach you.'); return; }
 
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Submitting...';
+      submitBtn.textContent = 'Submitting…';
 
       try {
-        // Sign in anonymously (required by Firestore rules for business_submissions create)
+        // Sign in anonymously
         let user = auth.currentUser;
         if (!user) {
           const cred = await signInAnonymously(auth);
           user = cred.user;
         }
 
+        // Upload logo if provided
+        let logoURL = null;
+        if (selectedLogoFile) {
+          uploadProgress.classList.add('show');
+          const ext = selectedLogoFile.name.split('.').pop();
+          const storageRef = ref(storage, `business_logo_submissions/${user.uid}_${Date.now()}.${ext}`);
+          const snapshot = await uploadBytes(storageRef, selectedLogoFile);
+          logoURL = await getDownloadURL(snapshot.ref);
+          uploadProgress.classList.remove('show');
+        }
+
+        // Collect hours — matches [String: [String]]? in Business.swift
+        const hours = collectHours();
+
         const businessData = {
           name,
-          description: getVal('description'),
+          description: getVal('description') || null,
           contactEmail,
           streetAddress: getVal('streetAddress'),
           city: getVal('city'),
           state: getVal('state'),
           zipCode: getVal('zipCode'),
-          phone: getVal('phone'),
-          website: getVal('website'),
-          categories: [document.getElementById('category').value || 'Restaurant'],
+          phone: getVal('phone') || null,
+          website: getVal('website') || null,
+          categories: [resolvedCategory()],
+          logoURL,           // null or Firebase Storage download URL string
           imageURL: null,
-          logoURL: null,
           latitude: null,
           longitude: null,
           isDozen: false,
           isFeatured: false,
-          businessHours: null,
+          hours,             // null or { dayName: [openTime, closeTime] }
           socialMedia: null
         };
 
@@ -417,13 +789,19 @@ const firebaseConfig = {
 
         showSuccess();
         form.reset();
+        clearLogo();
+        resetHours();
+
       } catch (err) {
         console.error('Submission error:', err);
+        uploadProgress.classList.remove('show');
         let msg = err?.message || String(err);
         if (msg.includes('permission-denied') || msg.includes('PERMISSION_DENIED')) {
           msg = 'Permission denied. Please ensure Firebase Anonymous Auth is enabled and Firestore rules allow creates.';
         } else if (msg.includes('auth/operation-not-allowed')) {
           msg = 'Anonymous sign-in is not enabled. Please enable it in Firebase Console → Authentication → Sign-in method.';
+        } else if (msg.includes('storage')) {
+          msg = 'Logo upload failed. Please check Firebase Storage rules allow anonymous writes to business_logo_submissions/.';
         }
         showError('Failed to submit: ' + msg);
       } finally {
