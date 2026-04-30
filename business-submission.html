@@ -334,7 +334,7 @@
     <header>
       <img src="assets/dishcountsLogo.png" alt="Side Dishcounts" style="height:100px;width:auto;margin-bottom:16px;" />
       <h1>Add Your Business to Side Dishcounts</h1>
-      <p>Submit your business for review. We'll get back to you once it's been processed.</p>
+      <p>Submit your business for the upcoming Side Dish exclusive app experience.</p>
     </header>
 
     <div class="alert alert-success" id="successBox">
@@ -358,43 +358,43 @@
           <label for="category" class="required">Primary Category</label>
           <select id="category" required>
             <option value="">Select a category</option>
-            <option value="Restaurant">Restaurant</option>
-            <option value="Cafe">Cafe</option>
+            <option value="African">African</option>
             <option value="Bar">Bar</option>
+            <option value="Barbecue">Barbecue</option>
             <option value="Brewery">Brewery</option>
             <option value="Brewpub">Brewpub</option>
+            <option value="Cafe">Cafe</option>
+            <option value="Chinese">Chinese</option>
+            <option value="Cocktail">Cocktail</option>
             <option value="Coffee">Coffee</option>
             <option value="Coffee shop">Coffee shop</option>
-            <option value="Pizza">Pizza</option>
-            <option value="Mexican">Mexican</option>
-            <option value="Italian">Italian</option>
-            <option value="Japanese">Japanese</option>
-            <option value="Sushi">Sushi</option>
-            <option value="Thai">Thai</option>
-            <option value="Vietnamese">Vietnamese</option>
-            <option value="Chinese">Chinese</option>
-            <option value="Korean">Korean</option>
-            <option value="Indian">Indian</option>
-            <option value="Mediterranean">Mediterranean</option>
-            <option value="New American">New American</option>
-            <option value="Seafood">Seafood</option>
-            <option value="Steakhouse">Steakhouse</option>
-            <option value="Barbecue">Barbecue</option>
             <option value="Dessert">Dessert</option>
-            <option value="Gastropub">Gastropub</option>
-            <option value="Cocktail">Cocktail</option>
-            <option value="Winery">Winery</option>
-            <option value="Fast Casual">Fast Casual</option>
-            <option value="Vegan">Vegan</option>
-            <option value="Vegetarian">Vegetarian</option>
-            <option value="Retail">Retail</option>
-            <option value="Grocery Store">Grocery Store</option>
             <option value="Entertainment">Entertainment</option>
             <option value="Event Venue">Event Venue</option>
-            <option value="Pie">Pie</option>
-            <option value="African">African</option>
+            <option value="Fast Casual">Fast Casual</option>
+            <option value="Gastropub">Gastropub</option>
             <option value="German">German</option>
             <option value="Greek">Greek</option>
+            <option value="Grocery Store">Grocery Store</option>
+            <option value="Indian">Indian</option>
+            <option value="Italian">Italian</option>
+            <option value="Japanese">Japanese</option>
+            <option value="Korean">Korean</option>
+            <option value="Mediterranean">Mediterranean</option>
+            <option value="Mexican">Mexican</option>
+            <option value="New American">New American</option>
+            <option value="Pie">Pie</option>
+            <option value="Pizza">Pizza</option>
+            <option value="Restaurant">Restaurant</option>
+            <option value="Retail">Retail</option>
+            <option value="Seafood">Seafood</option>
+            <option value="Steakhouse">Steakhouse</option>
+            <option value="Sushi">Sushi</option>
+            <option value="Thai">Thai</option>
+            <option value="Vegan">Vegan</option>
+            <option value="Vegetarian">Vegetarian</option>
+            <option value="Vietnamese">Vietnamese</option>
+            <option value="Winery">Winery</option>
             <option value="__other__">Other…</option>
           </select>
         </div>
@@ -593,13 +593,8 @@
     });
 
     // ========== HOURS UI ==========
-    // hours model: { [String: [String]] }
-    // Key = day name, value = [openTime, closeTime]
-    // We'll use the same day names that appear in typical iOS Calendar apps to match the app.
-
     const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 
-    // Generate time options in 30-min increments, 12-hr format
     function buildTimeOptions() {
       const opts = ['<option value="">-- Select --</option>'];
       for (let h = 0; h < 24; h++) {
@@ -650,8 +645,6 @@
     const hoursGrid = document.getElementById('hoursGrid');
     DAYS.forEach(day => hoursGrid.appendChild(buildHoursRow(day)));
 
-    // Collect hours into { [String: [String]] } — matches Business.swift `hours` type
-    // Only include days where both open and close are set, OR the day is marked closed (stored as ["Closed","Closed"])
     function collectHours() {
       const result = {};
       let hasAny = false;
@@ -669,7 +662,6 @@
           result[day] = [openSel.value, closeSel.value];
           hasAny = true;
         }
-        // Partially filled or empty days are skipped
       });
 
       return hasAny ? result : null;
@@ -731,14 +723,12 @@
       submitBtn.textContent = 'Submitting…';
 
       try {
-        // Sign in anonymously
         let user = auth.currentUser;
         if (!user) {
           const cred = await signInAnonymously(auth);
           user = cred.user;
         }
 
-        // Upload logo if provided
         let logoURL = null;
         if (selectedLogoFile) {
           uploadProgress.classList.add('show');
@@ -749,7 +739,6 @@
           uploadProgress.classList.remove('show');
         }
 
-        // Collect hours — matches [String: [String]]? in Business.swift
         const hours = collectHours();
 
         const businessData = {
@@ -763,13 +752,13 @@
           phone: getVal('phone') || null,
           website: getVal('website') || null,
           categories: [resolvedCategory()],
-          logoURL,           // null or Firebase Storage download URL string
+          logoURL,
           imageURL: null,
           latitude: null,
           longitude: null,
           isDozen: false,
           isFeatured: false,
-          hours,             // null or { dayName: [openTime, closeTime] }
+          hours,
           socialMedia: null
         };
 
@@ -791,6 +780,8 @@
         form.reset();
         clearLogo();
         resetHours();
+        categoryOtherGroup.style.display = 'none';
+        categoryOtherInput.required = false;
 
       } catch (err) {
         console.error('Submission error:', err);
