@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Submit a Recipe | Side Dishcounts</title>
+  <style>
+    :root {
+      --brand: #0c7bdc;
+      --brand-dark: #0660b3;
+      --text: #1a1a1a;
+      --text-muted: #666;
+      --border: #e0e0e6;
+      --bg: #f8f9fc;
+      --success: #0f7a3e;
+      --error: #c41e3a;
+      --accent: #e8530a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 24px 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+    header p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .card h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0;
+    }
+    .form-group { margin-bottom: 16px; }
+    .form-group:last-child { margin-bottom: 0; }
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 6px;
+    }
+    .optional { font-weight: 400; color: var(--text-muted); }
+    input[type="text"],
+    input[type="email"],
+    input[type="url"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      background: #fff;
+      transition: border-color 0.15s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(12,123,220,0.15);
+    }
+    textarea { min-height: 88px; resize: vertical; }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 520px) {
+      .row, .row-3 { grid-template-columns: 1fr; }
+    }
+    .note {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+    .required::after { content: " *"; color: var(--error); }
+
+    /* ===== BUTTONS ===== */
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+    }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-primary { background: var(--brand); color: #fff; padding: 12px 28px; font-size: 1rem; }
+    .btn-primary:hover:not(:disabled) { background: var(--brand-dark); }
+    .btn-secondary { background: #e8e9ef; color: var(--text); }
+    .btn-secondary:hover:not(:disabled) { background: #dcdde6; }
+    .btn-add {
+      background: none;
+      border: 1.5px dashed var(--brand);
+      color: var(--brand);
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      border-radius: 8px;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .btn-add:hover { background: rgba(12,123,220,0.05); }
+    .btn-icon {
+      background: none;
+      border: none;
+      padding: 4px 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .btn-icon:hover { color: var(--error); }
+    .btn-add-group {
+      background: none;
+      border: 1.5px dashed var(--accent);
+      color: var(--accent);
+      padding: 10px 16px;
+      font-size: 0.875rem;
+      border-radius: 8px;
+      width: 100%;
+      margin-top: 4px;
+    }
+    .btn-add-group:hover { background: rgba(232,83,10,0.05); }
+
+    /* ===== ALERTS ===== */
+    .alert {
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .alert.show { display: block; }
+    .alert-success { background: #e7f7ed; color: var(--success); border: 1px solid #cbead7; }
+    .alert-error { background: #fdecec; color: var(--error); border: 1px solid #f5c2c0; }
+
+    /* ===== IMAGE UPLOAD ===== */
+    .upload-area {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #fafbfd;
+      position: relative;
+    }
+    .upload-area:hover, .upload-area.drag-over {
+      border-color: var(--brand);
+      background: rgba(12,123,220,0.04);
+    }
+    .upload-area input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+      border: none;
+      padding: 0;
+    }
+    .upload-icon { font-size: 2rem; margin-bottom: 8px; }
+    .upload-label { font-size: 0.9rem; font-weight: 500; display: block; margin-bottom: 4px; }
+    .upload-sub { font-size: 0.8rem; color: var(--text-muted); }
+    .preview-wrap {
+      display: none;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 14px;
+      background: #f5f6fa;
+      border-radius: 8px;
+      margin-top: 12px;
+    }
+    .preview-wrap.show { display: flex; }
+    .preview-img {
+      width: 80px;
+      height: 56px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+    .preview-info { flex: 1; min-width: 0; }
+    .preview-name { font-size: 0.875rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .preview-size { font-size: 0.78rem; color: var(--text-muted); }
+    .upload-progress { display: none; margin-top: 10px; font-size: 0.82rem; color: var(--brand); }
+    .upload-progress.show { display: block; }
+
+    /* ===== INGREDIENT GROUPS ===== */
+    .groups-list { display: flex; flex-direction: column; gap: 20px; }
+
+    .group-block {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .group-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f8f9fc;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .group-header input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 4px 0;
+    }
+    .group-header input:focus { outline: none; }
+    .group-body { padding: 12px 14px; }
+
+    .ingredient-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 32px;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .ingredient-row input {
+      padding: 8px 10px;
+      font-size: 0.875rem;
+    }
+    @media (max-width: 520px) {
+      .ingredient-row { grid-template-columns: 1fr 32px; }
+      .ingredient-row .col-us,
+      .ingredient-row .col-metric { display: none; }
+    }
+    .ingredient-col-labels {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 32px;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .ingredient-col-labels span {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding-left: 2px;
+    }
+    @media (max-width: 520px) {
+      .ingredient-col-labels { grid-template-columns: 1fr 32px; }
+      .ingredient-col-labels .col-us,
+      .ingredient-col-labels .col-metric { display: none; }
+    }
+
+    /* ===== INSTRUCTIONS ===== */
+    .steps-list { display: flex; flex-direction: column; gap: 10px; }
+    .step-row {
+      display: grid;
+      grid-template-columns: 28px 1fr 32px;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .step-num {
+      width: 28px;
+      height: 28px;
+      background: var(--brand);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 9px;
+    }
+    .step-row textarea {
+      min-height: 64px;
+      font-size: 0.9rem;
+    }
+
+    /* ===== TAGS ===== */
+    .tags-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+      min-height: 10px;
+    }
+    .tag-chip {
+      background: #eef4fd;
+      color: var(--brand);
+      border: 1px solid #c5d9f5;
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    /* ===== ACTIONS ===== */
+    .actions { display: flex; gap: 12px; margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img src="assets/dishcountsLogo.png" alt="Side Dishcounts" style="height:80px;width:auto;margin-bottom:16px;" />
+      <h1>Submit a Recipe</h1>
+      <p>Share a recipe for review. We'll get back to you once it's been looked over.</p>
+    </header>
+
+    <div class="alert alert-success" id="successBox">
+      <strong>Thank you!</strong> Your recipe has been submitted successfully. We'll review it and be in touch if we have questions.
+    </div>
+    <div class="alert alert-error" id="errorBox"></div>
+
+    <form id="recipeForm">
+
+      <!-- Source -->
+      <div class="card">
+        <h2 style="margin-bottom:16px;">Recipe Source <span class="optional" style="font-size:0.9rem;">(optional)</span></h2>
+        <div class="row">
+          <div class="form-group">
+            <label for="sourceChef">Chef / Creator</label>
+            <input type="text" id="sourceChef" placeholder="e.g. Chef Maria Lopez" />
+          </div>
+          <div class="form-group">
+            <label for="sourceRestaurant">Restaurant</label>
+            <input type="text" id="sourceRestaurant" placeholder="e.g. The Blue Star" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group">
+            <label for="sourcePublication">Publication</label>
+            <input type="text" id="sourcePublication" placeholder="e.g. Side Dish Newsletter" />
+          </div>
+          <div class="form-group">
+            <label for="sourceDate">Date</label>
+            <input type="text" id="sourceDate" placeholder="e.g. May 2025" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Basic Info -->
+      <div class="card">
+        <h2 style="margin-bottom:16px;">Recipe Details</h2>
+        <div class="form-group">
+          <label for="recipeTitle" class="required">Recipe Title</label>
+          <input type="text" id="recipeTitle" required placeholder="e.g. Green Chile Chicken Enchiladas" />
+        </div>
+        <div class="form-group">
+          <label for="recipeDescription">Description <span class="optional">(optional)</span></label>
+          <textarea id="recipeDescription" placeholder="A short intro or story behind the recipe…"></textarea>
+        </div>
+        <div class="row">
+          <div class="form-group">
+            <label for="recipeServings">Servings <span class="optional">(optional)</span></label>
+            <input type="text" id="recipeServings" placeholder="e.g. 4 servings" />
+          </div>
+          <div class="form-group">
+            <label for="submitterEmail" class="required">Your Email</label>
+            <input type="email" id="submitterEmail" required placeholder="you@example.com" />
+            <p class="note">So we can reach you with any questions.</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="recipeTags">Tags <span class="optional">(optional)</span></label>
+          <input type="text" id="recipeTags" placeholder="e.g. Mexican, Comfort Food, Gluten-Free" />
+          <p class="note">Separate tags with commas.</p>
+          <div class="tags-preview" id="tagsPreview"></div>
+        </div>
+      </div>
+
+      <!-- Photo -->
+      <div class="card">
+        <h2 style="margin-bottom:4px;">Recipe Photo <span class="optional" style="font-size:0.9rem;">(optional)</span></h2>
+        <p class="note" style="margin-bottom:14px;">A hero shot of the finished dish.</p>
+        <div class="upload-area" id="imageDropZone">
+          <input type="file" id="imageFile" accept="image/png,image/jpeg,image/jpg,image/webp" />
+          <div class="upload-icon">📷</div>
+          <span class="upload-label">Click or drag to upload a photo</span>
+          <span class="upload-sub">PNG or JPG · Max 10 MB</span>
+        </div>
+        <div class="preview-wrap" id="imagePreviewWrap">
+          <img class="preview-img" id="imagePreviewImg" src="" alt="Recipe photo preview" />
+          <div class="preview-info">
+            <div class="preview-name" id="imagePreviewName"></div>
+            <div class="preview-size" id="imagePreviewSize"></div>
+          </div>
+          <button type="button" class="btn-icon" id="imageRemoveBtn" title="Remove photo">✕</button>
+        </div>
+        <div class="upload-progress" id="imageUploadProgress">⬆️ Uploading photo…</div>
+      </div>
+
+      <!-- Ingredients -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Ingredients</h2>
+        </div>
+        <p class="note" style="margin-bottom:14px;">
+          Organize ingredients into groups (e.g. "For the sauce", "For the filling"). Use just one group if the recipe is simple.
+          US and metric amounts are both optional but helpful.
+        </p>
+        <div class="groups-list" id="groupsList"></div>
+        <button type="button" class="btn-add-group" id="addGroupBtn">+ Add Ingredient Group</button>
+      </div>
+
+      <!-- Instructions -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Instructions</h2>
+        </div>
+        <div class="steps-list" id="stepsList"></div>
+        <button type="button" class="btn-add" id="addStepBtn">+ Add Step</button>
+      </div>
+
+      <!-- Notes -->
+      <div class="card">
+        <h2 style="margin-bottom:16px;">Notes <span class="optional" style="font-size:0.9rem;">(optional)</span></h2>
+        <textarea id="recipeNotes" placeholder="Tips, substitutions, make-ahead instructions, storage guidance…"></textarea>
+      </div>
+
+      <div class="actions">
+        <button type="submit" class="btn-primary" id="submitBtn">Submit Recipe</button>
+        <button type="button" class="btn-secondary" id="resetBtn">Reset</button>
+      </div>
+    </form>
+  </div>
+
+  <script type="module">
+    // ========== FIREBASE ==========
+    const firebaseConfig = {
+      apiKey: "AIzaSyBUF72oCa8P31wcsdZDgp06bfFTTtkDCmo",
+      authDomain: "dishcounts-v1.firebaseapp.com",
+      projectId: "dishcounts-v1",
+      storageBucket: "dishcounts-v1.firebasestorage.app",
+      messagingSenderId: "308275594809",
+      appId: "1:308275594809:web:4f14832819dc150a2defe8",
+      measurementId: "G-4R4X5ZZVJN"
+    };
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-storage.js";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    const successBox = document.getElementById('successBox');
+    const errorBox = document.getElementById('errorBox');
+    const submitBtn = document.getElementById('submitBtn');
+    const form = document.getElementById('recipeForm');
+
+    function showError(msg) {
+      errorBox.textContent = msg;
+      errorBox.classList.add('show');
+      successBox.classList.remove('show');
+      errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    function showSuccess() {
+      successBox.classList.add('show');
+      errorBox.classList.remove('show');
+      successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    function hideAlerts() {
+      successBox.classList.remove('show');
+      errorBox.classList.remove('show');
+    }
+    function getVal(id) {
+      return (document.getElementById(id)?.value || '').trim();
+    }
+    function uuid() {
+      return crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2);
+    }
+
+    // ========== TAGS ==========
+    const tagsInput = document.getElementById('recipeTags');
+    const tagsPreview = document.getElementById('tagsPreview');
+
+    function renderTags() {
+      const raw = tagsInput.value;
+      const tags = raw.split(',').map(t => t.trim()).filter(Boolean);
+      tagsPreview.innerHTML = tags.map(t => `<span class="tag-chip">${t}</span>`).join('');
+    }
+    tagsInput.addEventListener('input', renderTags);
+
+    function collectTags() {
+      return tagsInput.value.split(',').map(t => t.trim()).filter(Boolean);
+    }
+
+    // ========== IMAGE UPLOAD ==========
+    let selectedImageFile = null;
+    const imageFile = document.getElementById('imageFile');
+    const imageDropZone = document.getElementById('imageDropZone');
+    const imagePreviewWrap = document.getElementById('imagePreviewWrap');
+    const imagePreviewImg = document.getElementById('imagePreviewImg');
+    const imagePreviewName = document.getElementById('imagePreviewName');
+    const imagePreviewSize = document.getElementById('imagePreviewSize');
+    const imageRemoveBtn = document.getElementById('imageRemoveBtn');
+    const imageUploadProgress = document.getElementById('imageUploadProgress');
+
+    function formatBytes(b) {
+      if (b < 1024) return b + ' B';
+      if (b < 1024*1024) return (b/1024).toFixed(1) + ' KB';
+      return (b/(1024*1024)).toFixed(1) + ' MB';
+    }
+
+    function setImageFile(file) {
+      if (!file) return;
+      if (file.size > 10 * 1024 * 1024) { showError('Photo must be under 10 MB.'); return; }
+      const allowed = ['image/png','image/jpeg','image/jpg','image/webp'];
+      if (!allowed.includes(file.type)) { showError('Please upload a PNG, JPG, or WebP.'); return; }
+      selectedImageFile = file;
+      imagePreviewName.textContent = file.name;
+      imagePreviewSize.textContent = formatBytes(file.size);
+      const r = new FileReader();
+      r.onload = e => { imagePreviewImg.src = e.target.result; };
+      r.readAsDataURL(file);
+      imagePreviewWrap.classList.add('show');
+    }
+
+    function clearImage() {
+      selectedImageFile = null;
+      imageFile.value = '';
+      imagePreviewImg.src = '';
+      imagePreviewName.textContent = '';
+      imagePreviewSize.textContent = '';
+      imagePreviewWrap.classList.remove('show');
+    }
+
+    imageFile.addEventListener('change', () => { if (imageFile.files[0]) setImageFile(imageFile.files[0]); });
+    imageRemoveBtn.addEventListener('click', clearImage);
+    imageDropZone.addEventListener('dragover', e => { e.preventDefault(); imageDropZone.classList.add('drag-over'); });
+    imageDropZone.addEventListener('dragleave', () => imageDropZone.classList.remove('drag-over'));
+    imageDropZone.addEventListener('drop', e => {
+      e.preventDefault(); imageDropZone.classList.remove('drag-over');
+      if (e.dataTransfer.files[0]) setImageFile(e.dataTransfer.files[0]);
+    });
+
+    // ========== INGREDIENT GROUPS ==========
+    // Matches Recipe.swift: ingredient_groups: [{ group: String, ingredients: [{ item, us, metric }] }]
+    const groupsList = document.getElementById('groupsList');
+
+    function buildIngredientRow(groupEl) {
+      const row = document.createElement('div');
+      row.className = 'ingredient-row';
+      row.innerHTML = `
+        <input type="text" class="col-item" placeholder="Ingredient name" aria-label="Ingredient" />
+        <input type="text" class="col-us" placeholder="US amount" aria-label="US amount" />
+        <input type="text" class="col-metric" placeholder="Metric amount" aria-label="Metric amount" />
+        <button type="button" class="btn-icon" title="Remove ingredient">✕</button>
+      `;
+      row.querySelector('.btn-icon').addEventListener('click', () => {
+        row.remove();
+      });
+      groupEl.querySelector('.ingredients-list').appendChild(row);
+    }
+
+    function buildGroupBlock() {
+      const block = document.createElement('div');
+      block.className = 'group-block';
+      block.innerHTML = `
+        <div class="group-header">
+          <input type="text" placeholder="Group name (e.g. For the sauce)" aria-label="Group name" />
+          <button type="button" class="btn-icon" title="Remove group">✕</button>
+        </div>
+        <div class="group-body">
+          <div class="ingredient-col-labels">
+            <span>Ingredient</span>
+            <span class="col-us">US Amount</span>
+            <span class="col-metric">Metric Amount</span>
+            <span></span>
+          </div>
+          <div class="ingredients-list"></div>
+          <button type="button" class="btn-add add-ingredient-btn">+ Add Ingredient</button>
+        </div>
+      `;
+      block.querySelector('.group-header .btn-icon').addEventListener('click', () => block.remove());
+      block.querySelector('.add-ingredient-btn').addEventListener('click', () => buildIngredientRow(block));
+      // Start with two blank ingredient rows
+      buildIngredientRow(block);
+      buildIngredientRow(block);
+      groupsList.appendChild(block);
+    }
+
+    document.getElementById('addGroupBtn').addEventListener('click', buildGroupBlock);
+
+    // Seed with one group on load
+    buildGroupBlock();
+
+    function collectIngredientGroups() {
+      const groups = [];
+      groupsList.querySelectorAll('.group-block').forEach(block => {
+        const groupName = block.querySelector('.group-header input').value.trim() || 'Ingredients';
+        const ingredients = [];
+        block.querySelectorAll('.ingredient-row').forEach(row => {
+          const item = row.querySelector('.col-item').value.trim();
+          if (!item) return; // skip empty rows
+          const us = row.querySelector('.col-us').value.trim() || null;
+          const metric = row.querySelector('.col-metric').value.trim() || null;
+          ingredients.push({ id: uuid(), item, us, metric });
+        });
+        if (ingredients.length > 0) {
+          groups.push({ group: groupName, ingredients });
+        }
+      });
+      return groups;
+    }
+
+    // ========== INSTRUCTIONS ==========
+    // Matches Recipe.swift: instructions: [String]
+    const stepsList = document.getElementById('stepsList');
+
+    function updateStepNumbers() {
+      stepsList.querySelectorAll('.step-num').forEach((el, i) => {
+        el.textContent = i + 1;
+      });
+    }
+
+    function buildStepRow() {
+      const row = document.createElement('div');
+      row.className = 'step-row';
+      const stepNum = stepsList.querySelectorAll('.step-row').length + 1;
+      row.innerHTML = `
+        <div class="step-num">${stepNum}</div>
+        <textarea placeholder="Describe this step…" rows="2"></textarea>
+        <button type="button" class="btn-icon" title="Remove step">✕</button>
+      `;
+      row.querySelector('.btn-icon').addEventListener('click', () => {
+        row.remove();
+        updateStepNumbers();
+      });
+      stepsList.appendChild(row);
+    }
+
+    document.getElementById('addStepBtn').addEventListener('click', buildStepRow);
+
+    // Seed with two blank steps
+    buildStepRow();
+    buildStepRow();
+
+    function collectInstructions() {
+      return Array.from(stepsList.querySelectorAll('.step-row textarea'))
+        .map(t => t.value.trim())
+        .filter(Boolean);
+    }
+
+    // ========== RESET ==========
+    function fullReset() {
+      form.reset();
+      clearImage();
+      tagsPreview.innerHTML = '';
+      groupsList.innerHTML = '';
+      buildGroupBlock();
+      stepsList.innerHTML = '';
+      buildStepRow();
+      buildStepRow();
+      hideAlerts();
+    }
+    document.getElementById('resetBtn').addEventListener('click', fullReset);
+
+    // ========== SUBMIT ==========
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      hideAlerts();
+
+      const title = getVal('recipeTitle');
+      const submitterEmail = getVal('submitterEmail');
+      if (!title) { showError('Recipe title is required.'); return; }
+      if (!submitterEmail) { showError('Your email is required so we can reach you.'); return; }
+
+      const ingredientGroups = collectIngredientGroups();
+      const instructions = collectInstructions();
+      if (ingredientGroups.length === 0) { showError('Please add at least one ingredient.'); return; }
+      if (instructions.length === 0) { showError('Please add at least one instruction step.'); return; }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting…';
+
+      try {
+        let user = auth.currentUser;
+        if (!user) {
+          const cred = await signInAnonymously(auth);
+          user = cred.user;
+        }
+
+        // Upload image if provided → stored at recipes/{uid}_{timestamp}/{filename}
+        let imageURL = null;
+        if (selectedImageFile) {
+          imageUploadProgress.classList.add('show');
+          const ext = selectedImageFile.name.split('.').pop();
+          const storageRef = ref(storage, `recipes/${user.uid}_${Date.now()}.${ext}`);
+          const snapshot = await uploadBytes(storageRef, selectedImageFile);
+          imageURL = await getDownloadURL(snapshot.ref);
+          imageUploadProgress.classList.remove('show');
+        }
+
+        // Build source object — omit entirely if all fields empty
+        const source = {
+          chef: getVal('sourceChef') || null,
+          restaurant: getVal('sourceRestaurant') || null,
+          publication: getVal('sourcePublication') || null,
+          date: getVal('sourceDate') || null,
+        };
+        const hasSource = Object.values(source).some(v => v !== null);
+
+        // Recipe data matching Recipe.swift new format:
+        // ingredient_groups + instructions (not sections)
+        const recipeData = {
+          title,
+          description: getVal('recipeDescription') || null,
+          imageURL,
+          servings: getVal('recipeServings') || null,
+          tags: collectTags(),
+          source: hasSource ? source : null,
+          ingredient_groups: ingredientGroups,   // [{ group, ingredients: [{ id, item, us, metric }] }]
+          instructions,                           // [String]
+          sections: [],                           // empty — using new format
+          featuredBusinessIds: [],
+          notes: getVal('recipeNotes') || null,
+        };
+
+        const submission = {
+          submittedByUserId: user.uid,
+          submittedVia: 'web',
+          submitterEmail,
+          recipeData,
+          status: 'pending',
+          reviewerId: null,
+          reviewedAt: null,
+          notes: null,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        };
+
+        await addDoc(collection(db, 'recipe_submissions'), submission);
+
+        showSuccess();
+        fullReset();
+
+      } catch (err) {
+        console.error('Submission error:', err);
+        imageUploadProgress.classList.remove('show');
+        let msg = err?.message || String(err);
+        if (msg.includes('permission-denied') || msg.includes('PERMISSION_DENIED')) {
+          msg = 'Permission denied. Please ensure Firebase Anonymous Auth is enabled and Firestore rules allow creates on recipe_submissions.';
+        } else if (msg.includes('auth/operation-not-allowed')) {
+          msg = 'Anonymous sign-in is not enabled. Please enable it in Firebase Console → Authentication → Sign-in method.';
+        } else if (msg.includes('storage')) {
+          msg = 'Photo upload failed. Please check Firebase Storage rules allow anonymous writes to recipes/.';
+        }
+        showError('Failed to submit: ' + msg);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Recipe';
+      }
+    });
+  </script>
+</body>
+</html>
